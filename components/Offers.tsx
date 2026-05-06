@@ -1,7 +1,7 @@
 
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
 import { ViewState } from '../App';
+import { sanityClient } from '../services/sanity';
 
 type OfferType = 'fiber' | 'mobile';
 
@@ -11,18 +11,63 @@ interface OffersProps {
 
 export const Offers: React.FC<OffersProps> = ({ onNavigate }) => {
   const [activeTab, setActiveTab] = useState<OfferType>('fiber');
+  const [fiberPlans, setFiberPlans] = useState<any[]>([]);
+  const [mobileBundles, setMobileBundles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const fiberPlans = [
-    { name: 'Bronze', speed: '4 Mbps', price: '30.000', popular: false, features: ['Usage illimité', 'Support 24/7', 'Wifi inclus'] },
-    { name: 'Silver', speed: '10 Mbps', price: '75.000', popular: true, features: ['Streaming HD', 'Usage illimité', 'Installation Prioritaire'] },
-    { name: 'Gold', speed: '20 Mbps', price: '140.000', popular: false, features: ['Visioconférence 4K', 'Usage illimité', 'Routeur Premium'] },
-  ];
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        const query = '*[_type == "product"]';
+        const result = await sanityClient.fetch(query);
+        
+        const fiber = result
+          .filter((item: any) => item.category === 'fiber')
+          .map((item: any) => ({
+            name: item.name,
+            speed: item.speed,
+            price: item.price,
+            popular: item.popular,
+            features: item.features || []
+          }));
 
-  const mobileBundles = [
-    { name: 'Journée Plus', data: '500 Mo', validity: '24h', price: '500' },
-    { name: 'Semaine Giga', data: '4 Go', validity: '7 Jours', price: '2.500' },
-    { name: 'Mois Max', data: '15 Go', validity: '30 Jours', price: '10.000' },
-  ];
+        const mobile = result
+          .filter((item: any) => item.category === 'mobile')
+          .map((item: any) => ({
+            name: item.name,
+            data: item.data,
+            validity: item.validity,
+            price: item.price,
+            popular: item.popular
+          }));
+
+        if (fiber.length > 0) {
+          setFiberPlans(fiber);
+        } else {
+          setFiberPlans([
+            { name: 'Bronze', speed: '4 Mbps', price: '30.000', popular: false, features: ['Usage illimité', 'Support 24/7', 'Wifi inclus'] },
+            { name: 'Silver', speed: '10 Mbps', price: '75.000', popular: true, features: ['Streaming HD', 'Usage illimité', 'Installation Prioritaire'] },
+            { name: 'Gold', speed: '20 Mbps', price: '140.000', popular: false, features: ['Visioconférence 4K', 'Usage illimité', 'Routeur Premium'] },
+          ]);
+        }
+
+        if (mobile.length > 0) {
+          setMobileBundles(mobile);
+        } else {
+          setMobileBundles([
+            { name: 'Journée Plus', data: '500 Mo', validity: '24h', price: '500' },
+            { name: 'Semaine Giga', data: '4 Go', validity: '7 Jours', price: '2.500' },
+            { name: 'Mois Max', data: '15 Go', validity: '30 Jours', price: '10.000' },
+          ]);
+        }
+      } catch (error) {
+        console.error('Erreur Sanity Offers:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOffers();
+  }, []);
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -101,9 +146,19 @@ export const Offers: React.FC<OffersProps> = ({ onNavigate }) => {
                     <span className="material-symbols-outlined text-2xl">signal_cellular_alt</span>
                   </div>
                   <h3 className="text-xl font-display font-bold text-slate-900 mb-1">{bundle.name}</h3>
-                  <div className="text-slate-500 text-sm font-bold mb-6">Validité : {bundle.validity}</div>
+                  <div className="flex items-center space-x-2 text-primary font-black mb-4">
+                    <span className="text-2xl">{bundle.data}</span>
+                    {bundle.validity && (
+                      <>
+                        <span className="text-slate-300">|</span>
+                        <span className="text-sm text-slate-500 uppercase tracking-widest">{bundle.validity}</span>
+                      </>
+                    )}
+                  </div>
                   
-                  <div className="text-5xl font-black text-primary mb-8">{bundle.data}</div>
+                  <div className="text-slate-500 text-sm mb-6 line-clamp-2">
+                    Profitez de la meilleure couverture 4G+ du Tchad avec l'offre {bundle.name}.
+                  </div>
                   
                   <div className="flex items-baseline justify-between pt-6 border-t border-slate-50">
                     <div className="flex items-baseline">

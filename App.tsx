@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { Services } from './components/Services';
@@ -18,14 +19,16 @@ import { FAQPage } from './components/FAQPage';
 import { NewsArticlePage } from './components/NewsArticlePage';
 import { IncidentNetworkPage } from './components/IncidentNetworkPage';
 import { AnalyticsDashboard } from './components/AnalyticsDashboard';
+import { StudioPage } from './components/StudioPage';
 import { analytics } from './services/analytics';
 
 export type ViewState = 'home' | 'about' | 'offers' | 'coverage' | 'news' | 'contact' | 'service-details' | 'faq' | 'news-article' | 'incident-network';
 
-const App: React.FC = () => {
+const MainSite: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewState>('home');
   const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -89,7 +92,26 @@ const App: React.FC = () => {
       
       {/* Dashboard de suivi analytique (visible via le bouton flottant en bas à gauche) */}
       <AnalyticsDashboard />
+
+      {/* Raccourci vers le Studio pour le test */}
+      <button 
+        onClick={() => navigate('/studio')}
+        className="fixed bottom-20 left-4 bg-slate-900/50 hover:bg-slate-900 text-white p-2 rounded-full text-[10px] uppercase font-bold transition-all z-50"
+      >
+        Studio
+      </button>
     </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/studio/*" element={<StudioPage />} />
+        <Route path="*" element={<MainSite />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 

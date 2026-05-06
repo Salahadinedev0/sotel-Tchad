@@ -1,6 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NewsCardProps } from '../types';
+import { sanityClient, urlFor } from '../services/sanity';
 
 type Category = 'Tous' | 'Infrastructure' | 'Innovation' | 'Entreprise' | 'Communauté';
 
@@ -10,59 +11,35 @@ interface NewsPageProps {
 
 export const NewsPage: React.FC<NewsPageProps> = ({ onReadArticle }) => {
   const [activeCategory, setActiveCategory] = useState<Category>('Tous');
+  const [allNews, setAllNews] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const categories: Category[] = ['Tous', 'Infrastructure', 'Innovation', 'Entreprise', 'Communauté'];
 
-  const allNews: (NewsCardProps & { id: string, category: Category })[] = [
-    {
-      id: 'article-extra-1',
-      date: '20 Mai 2024',
-      title: 'Extension du Backbone National : Cap sur le Nord',
-      excerpt: 'Les travaux de pose de fibre optique avancent à grands pas vers les régions septentrionales du Tchad.',
-      image: 'https://images.unsplash.com/photo-1551703599-6b3e8379aa8b?auto=format&fit=crop&q=80&w=800',
-      category: 'Infrastructure'
-    },
-    {
-      id: 'article-1',
-      date: '15 Mai 2024',
-      title: 'Lancement de la Fibre à Am-Riguebe',
-      excerpt: 'Sotel Tchad poursuit son déploiement avec l\'arrivée du très haut débit dans le quartier Am-Riguebe.',
-      image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=800',
-      category: 'Infrastructure'
-    },
-    {
-      id: 'article-2',
-      date: '10 Mai 2024',
-      title: 'Nouveaux forfaits Mobile Tawali',
-      excerpt: 'Découvrez nos offres data 4G repensées pour vous offrir encore plus de gigas au meilleur prix.',
-      image: 'https://images.unsplash.com/photo-1512428559083-a401c338e45e?auto=format&fit=crop&q=80&w=800',
-      category: 'Innovation'
-    },
-    {
-      id: 'article-extra-2',
-      date: '05 Mai 2024',
-      title: 'Partenariat Stratégique avec les Startups locales',
-      excerpt: 'Sotel Tchad ouvre ses APIs aux développeurs locaux pour stimuler l\'innovation numérique au Tchad.',
-      image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800',
-      category: 'Innovation'
-    },
-    {
-      id: 'article-3',
-      date: '02 Mai 2024',
-      title: 'Sotel Tchad au forum de l\'innovation SITIC 2024',
-      excerpt: 'Retour sur notre participation au SITIC AFRICA 2024 et nos engagements pour l\'économie numérique.',
-      image: 'https://images.unsplash.com/photo-1591115765373-520b7a21765b?auto=format&fit=crop&q=80&w=800',
-      category: 'Entreprise'
-    },
-    {
-      id: 'article-extra-3',
-      date: '25 Avril 2024',
-      title: 'Rentrée Solidaire : Sotel aux côtés des écoles',
-      excerpt: 'L\'opérateur national fait don de matériel informatique et de kits scolaires dans plusieurs provinces.',
-      image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=800',
-      category: 'Communauté'
-    }
-  ];
+  useEffect(() => {
+    const fetchAllNews = async () => {
+      try {
+        const query = '*[_type == "article"] | order(date desc) { _id, title, date, excerpt, image, category }';
+        const result = await sanityClient.fetch(query);
+        
+        const formatted = result.map((item: any) => ({
+          id: item._id,
+          title: item.title,
+          date: item.date ? new Date(item.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Date inconnue',
+          excerpt: item.excerpt,
+          image: item.image ? urlFor(item.image).url() : 'https://images.unsplash.com/photo-1551703599-6b3e8379aa8b?auto=format&fit=crop&q=80&w=800',
+          category: item.category || 'Infrastructure'
+        }));
+
+        setAllNews(formatted);
+      } catch (error) {
+        console.error('Erreur NewsPage Sanity:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAllNews();
+  }, []);
 
   const filteredNews = activeCategory === 'Tous' 
     ? allNews 
