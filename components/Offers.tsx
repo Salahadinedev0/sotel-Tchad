@@ -1,9 +1,15 @@
 
 import React, { useState } from 'react';
 
+import { ViewState } from '../App';
+
 type OfferType = 'fiber' | 'mobile';
 
-export const Offers: React.FC = () => {
+interface OffersProps {
+  onNavigate: (view: ViewState) => void;
+}
+
+export const Offers: React.FC<OffersProps> = ({ onNavigate }) => {
   const [activeTab, setActiveTab] = useState<OfferType>('fiber');
 
   const fiberPlans = [
@@ -77,7 +83,10 @@ export const Offers: React.FC = () => {
                       <span className="ml-2 text-slate-500 font-bold">FCFA</span>
                       <span className="ml-1 text-slate-400 text-xs">/mois</span>
                     </div>
-                    <button className={`w-full py-4 rounded-xl font-bold transition-all ${plan.popular ? 'bg-secondary text-white shadow-lg shadow-secondary/20 hover:bg-green-600' : 'bg-primary text-white hover:bg-blue-800 shadow-lg shadow-primary/20'}`}>
+                    <button 
+                      onClick={() => onNavigate('contact')}
+                      className={`w-full py-4 rounded-xl font-bold transition-all ${plan.popular ? 'bg-secondary text-white shadow-lg shadow-secondary/20 hover:bg-green-600' : 'bg-primary text-white hover:bg-blue-800 shadow-lg shadow-primary/20'}`}
+                    >
                       Souscrire
                     </button>
                   </div>
@@ -101,7 +110,10 @@ export const Offers: React.FC = () => {
                       <span className="text-2xl font-black text-slate-900">{bundle.price}</span>
                       <span className="ml-1 text-xs font-bold text-slate-500 uppercase">FCFA</span>
                     </div>
-                    <button className="px-6 py-2 rounded-lg bg-slate-900 text-white font-bold text-sm hover:bg-primary transition-colors">
+                    <button 
+                      onClick={() => onNavigate('contact')}
+                      className="px-6 py-2 rounded-lg bg-slate-900 text-white font-bold text-sm hover:bg-primary transition-colors"
+                    >
                       Activer
                     </button>
                   </div>
@@ -120,7 +132,10 @@ export const Offers: React.FC = () => {
                 <p className="text-slate-500 text-sm">Découvrez nos offres Sotel Business avec IP fixe et bande passante garantie.</p>
               </div>
             </div>
-            <button className="px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-blue-800 transition-colors whitespace-nowrap">
+            <button 
+              onClick={() => onNavigate('contact')}
+              className="px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-blue-800 transition-colors whitespace-nowrap"
+            >
               Espace Entreprise
             </button>
           </div>

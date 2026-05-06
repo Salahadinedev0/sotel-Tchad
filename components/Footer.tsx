@@ -62,16 +62,23 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:col-span-1 lg:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 lg:col-span-1">
-            <div className="flex items-center space-x-3 mb-8 cursor-pointer" onClick={() => onNavigate('home')}>
-              <div className="bg-white p-1 rounded-full">
+            <a 
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('home');
+              }}
+              className="flex items-center space-x-3 mb-8 cursor-pointer group transition-transform hover:scale-[1.02] active:scale-95 origin-left"
+            >
+              <div className="bg-white p-1 rounded-full group-hover:shadow-md transition-shadow">
                  <img 
                   src="https://i.imgur.com/1NH6njo.png" 
                   alt="Sotel Logo" 
                   className="h-8 w-8 object-contain"
                 />
               </div>
-              <span className="hidden md:inline text-2xl font-display font-bold text-white">SOTEL <span className="text-secondary">TCHAD</span></span>
-            </div>
+              <span className="hidden md:inline text-2xl font-display font-bold text-white group-hover:text-secondary transition-colors">SOTEL <span className="text-secondary">TCHAD</span></span>
+            </a>
             <p className="text-sm text-slate-400 mb-8 leading-relaxed">
               L'opérateur national au service du développement socio-économique du Tchad par les technologies de l'information.
             </p>

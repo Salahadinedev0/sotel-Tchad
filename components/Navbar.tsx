@@ -28,11 +28,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo Section */}
-          <div 
-            className="flex-shrink-0 flex items-center space-x-3 cursor-pointer"
-            onClick={() => handleNav('home')}
+          <a 
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNav('home');
+            }}
+            className="flex-shrink-0 flex items-center space-x-3 cursor-pointer group transition-transform hover:scale-[1.02] active:scale-95"
           >
-            <div className="bg-white p-1 rounded-full shadow-sm">
+            <div className="bg-white p-1 rounded-full shadow-sm group-hover:shadow-md transition-shadow">
                <img 
                 src="https://i.imgur.com/1NH6njo.png" 
                 alt="Sotel Tchad Logo" 
@@ -40,12 +44,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, currentView }) => {
               />
             </div>
             <div className="hidden md:flex flex-col leading-none">
-              <span className="text-xl font-display font-bold text-primary tracking-tight">
+              <span className="text-xl font-display font-bold text-primary tracking-tight group-hover:text-blue-700 transition-colors">
                 SOTEL <span className="text-secondary">TCHAD</span>
               </span>
               <span className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Opérateur National</span>
             </div>
-          </div>
+          </a>
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex space-x-8 items-center">

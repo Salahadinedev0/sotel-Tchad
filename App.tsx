@@ -56,7 +56,7 @@ const App: React.FC = () => {
           <>
             <Hero onNavigate={setCurrentView} />
             <Services onNavigateToService={handleNavigateToService} />
-            <PricingBanner />
+            <PricingBanner onNavigate={setCurrentView} />
             <ValueProps />
             <Coverage onNavigate={setCurrentView} />
             <News 
@@ -66,7 +66,7 @@ const App: React.FC = () => {
           </>
         )}
         {currentView === 'about' && <About />}
-        {currentView === 'offers' && <Offers />}
+        {currentView === 'offers' && <Offers onNavigate={setCurrentView} />}
         {currentView === 'coverage' && <CoveragePage />}
         {currentView === 'news' && <NewsPage onReadArticle={handleReadArticle} />}
         {currentView === 'contact' && <ContactPage />}

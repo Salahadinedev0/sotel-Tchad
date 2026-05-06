@@ -1,11 +1,16 @@
 
 import React from 'react';
 import { analytics } from '../services/analytics';
+import { ViewState } from '../App';
 
-export const PricingBanner: React.FC = () => {
+interface PricingBannerProps {
+  onNavigate: (view: ViewState) => void;
+}
+
+export const PricingBanner: React.FC<PricingBannerProps> = ({ onNavigate }) => {
   const handleSubscribe = () => {
     analytics.track('cta_click', 'Subscription Fiber 30k FCFA');
-    alert('Merci de votre intérêt ! Un conseiller vous contactera.');
+    onNavigate('contact');
   };
 
   return (
