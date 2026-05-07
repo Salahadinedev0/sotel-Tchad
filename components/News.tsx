@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { NewsCardProps } from '../types';
-import { sanityClient, urlFor } from '../services/sanity';
+import { fetchSanity, urlFor } from '../services/sanity';
 
 interface ExtendedNewsCardProps extends NewsCardProps {
   id: string;
@@ -42,7 +42,7 @@ export const News: React.FC<NewsProps> = ({ onSeeAll, onReadArticle }) => {
     const fetchNews = async () => {
       try {
         const query = '*[_type == "article"] | order(date desc) [0...3] { _id, title, date, excerpt, image }';
-        const result = await sanityClient.fetch(query);
+        const result = await fetchSanity(query);
         
         const formattedNews = result.map((item: any) => ({
           id: item._id,

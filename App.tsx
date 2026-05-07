@@ -18,7 +18,6 @@ import { ServiceDetailsPage } from './components/ServiceDetailsPage';
 import { FAQPage } from './components/FAQPage';
 import { NewsArticlePage } from './components/NewsArticlePage';
 import { IncidentNetworkPage } from './components/IncidentNetworkPage';
-import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { StudioPage } from './components/StudioPage';
 import { analytics } from './services/analytics';
 
@@ -89,17 +88,6 @@ const MainSite: React.FC = () => {
         )}
       </main>
       <Footer onNavigate={setCurrentView} />
-      
-      {/* Dashboard de suivi analytique (visible via le bouton flottant en bas à gauche) */}
-      <AnalyticsDashboard />
-
-      {/* Raccourci vers le Studio pour le test */}
-      <button 
-        onClick={() => navigate('/studio')}
-        className="fixed bottom-20 left-4 bg-slate-900/50 hover:bg-slate-900 text-white p-2 rounded-full text-[10px] uppercase font-bold transition-all z-50"
-      >
-        Studio
-      </button>
     </div>
   );
 };

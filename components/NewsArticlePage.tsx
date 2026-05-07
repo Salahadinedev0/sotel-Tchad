@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ViewState } from '../App';
-import { sanityClient, urlFor } from '../services/sanity';
+import { fetchSanity, urlFor } from '../services/sanity';
 import { PortableText } from '@portabletext/react';
 
 interface NewsArticlePageProps {
@@ -20,7 +20,7 @@ export const NewsArticlePage: React.FC<NewsArticlePageProps> = ({ articleId, onN
       try {
         // Fetch current article
         const articleQuery = `*[_type == "article" && _id == $id][0]`;
-        const result = await sanityClient.fetch(articleQuery, { id: articleId });
+        const result = await fetchSanity(articleQuery, { id: articleId });
         
         if (result) {
           setArticle({
@@ -32,7 +32,7 @@ export const NewsArticlePage: React.FC<NewsArticlePageProps> = ({ articleId, onN
 
         // Fetch suggested news
         const suggestionsQuery = `*[_type == "article" && _id != $id][0...3] { _id, title, date, image }`;
-        const suggestions = await sanityClient.fetch(suggestionsQuery, { id: articleId });
+        const suggestions = await fetchSanity(suggestionsQuery, { id: articleId });
         setSuggestedNews(suggestions.map((s: any) => ({
           _id: s._id,
           title: s.title,

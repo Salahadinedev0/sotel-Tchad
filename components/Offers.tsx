@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ViewState } from '../App';
-import { sanityClient } from '../services/sanity';
+import { fetchSanity } from '../services/sanity';
 
 type OfferType = 'fiber' | 'mobile';
 
@@ -19,7 +19,7 @@ export const Offers: React.FC<OffersProps> = ({ onNavigate }) => {
     const fetchOffers = async () => {
       try {
         const query = '*[_type == "product"]';
-        const result = await sanityClient.fetch(query);
+        const result = await fetchSanity(query);
         
         const fiber = result
           .filter((item: any) => item.category === 'fiber')
@@ -60,8 +60,12 @@ export const Offers: React.FC<OffersProps> = ({ onNavigate }) => {
             { name: 'Mois Max', data: '15 Go', validity: '30 Jours', price: '10.000' },
           ]);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Erreur Sanity Offers:', error);
+        // On affiche plus de détails si possible
+        if (error.message?.includes('Network Error') || error.message?.includes('Failed to fetch')) {
+          console.warn('Problème de connexion Sanity : Vérifiez vos paramètres CORS sur manage.sanity.io');
+        }
       } finally {
         setLoading(false);
       }

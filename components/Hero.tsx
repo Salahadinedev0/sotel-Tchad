@@ -1,12 +1,36 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ViewState } from '../App';
+import { fetchSanity } from '../services/sanity';
 
 interface HeroProps {
   onNavigate: (view: ViewState) => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
+  const [content, setContent] = useState({
+    title: "L'excellence technologique au cœur du Tchad",
+    subtitle: 'Découvrez une connectivité ultra-rapide avec la fibre optique de Sotel Tchad. Le premier opérateur historique au service de votre transformation numérique.'
+  });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const query = '*[_type == "settings"][0]';
+        const result = await fetchSanity(query);
+        if (result) {
+          setContent({
+            title: result.heroTitle || content.title,
+            subtitle: result.heroSubtitle || content.subtitle
+          });
+        }
+      } catch (error) {
+        console.error('Erreur Sanity Hero Settings:', error);
+      }
+    };
+    fetchSettings();
+  }, []);
+
   return (
     <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 bg-slate-50 overflow-hidden">
       {/* Abstract Background Elements (Lightweight) */}
@@ -23,10 +47,10 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
             Connecter le Tchad au Monde
           </div>
           <h1 className="text-4xl lg:text-7xl font-display font-extrabold text-slate-900 leading-[1.1] mb-8">
-            L'excellence technologique au <span className="text-primary">cœur du Tchad</span>
+            {content.title}
           </h1>
           <p className="text-lg lg:text-xl text-slate-600 mb-10 leading-relaxed max-w-2xl">
-            Découvrez une connectivité ultra-rapide avec la fibre optique de Sotel Tchad. Le premier opérateur historique au service de votre transformation numérique.
+            {content.subtitle}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <button 
