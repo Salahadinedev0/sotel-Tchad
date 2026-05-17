@@ -1,7 +1,6 @@
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { NewsCardProps } from '../types';
-import { fetchSanity, urlFor } from '../services/sanity';
 
 interface ExtendedNewsCardProps extends NewsCardProps {
   id: string;
@@ -34,59 +33,31 @@ interface NewsProps {
   onReadArticle: (id: string) => void;
 }
 
+const STATIC_NEWS_ITEMS = [
+  {
+    id: 'article-1',
+    date: '15 Mai 2024',
+    title: 'Lancement de la Fibre à Am-Riguebe',
+    excerpt: 'Sotel Tchad poursuit son déploiement avec l\'arrivée du très haut débit dans le quartier Am-Riguebe.',
+    image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=800'
+  },
+  {
+    id: 'article-2',
+    date: '10 Mai 2024',
+    title: 'Nouveaux forfaits Mobile Tawali',
+    excerpt: 'Découvrez nos offres data 4G repensées pour vous offrir encore plus de gigas au meilleur prix.',
+    image: 'https://images.unsplash.com/photo-1512428559083-a401c338e45e?auto=format&fit=crop&q=80&w=800'
+  },
+  {
+    id: 'article-3',
+    date: '02 Mai 2024',
+    title: 'Sotel Tchad au forum de l\'innovation',
+    excerpt: 'Retour sur notre participation au SITIC AFRICA 2024 et nos engagements pour l\'économie numérique.',
+    image: 'https://images.unsplash.com/photo-1591115765373-520b7a21765b?auto=format&fit=crop&q=80&w=800'
+  }
+];
+
 export const News: React.FC<NewsProps> = ({ onSeeAll, onReadArticle }) => {
-  const [newsItems, setNewsItems] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const query = '*[_type == "article"] | order(date desc) [0...3] { _id, title, date, excerpt, image }';
-        const result = await fetchSanity(query);
-        
-        const formattedNews = result.map((item: any) => ({
-          id: item._id,
-          title: item.title,
-          date: item.date ? new Date(item.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Date inconnue',
-          excerpt: item.excerpt,
-          image: item.image ? urlFor(item.image).url() : 'https://via.placeholder.com/800x600?text=No+Image'
-        }));
-
-        setNewsItems(formattedNews);
-      } catch (error) {
-        console.error('Erreur lors de la récupération des actualités Sanity:', error);
-        // Fallback local en cas d'erreur ou si Sanity n'est pas encore configuré avec des données
-        setNewsItems([
-          {
-            id: 'article-1',
-            date: '15 Mai 2024',
-            title: 'Lancement de la Fibre à Am-Riguebe',
-            excerpt: 'Sotel Tchad poursuit son déploiement avec l\'arrivée du très haut débit dans le quartier Am-Riguebe.',
-            image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=800'
-          },
-          {
-            id: 'article-2',
-            date: '10 Mai 2024',
-            title: 'Nouveaux forfaits Mobile Tawali',
-            excerpt: 'Découvrez nos offres data 4G repensées pour vous offrir encore plus de gigas au meilleur prix.',
-            image: 'https://images.unsplash.com/photo-1512428559083-a401c338e45e?auto=format&fit=crop&q=80&w=800'
-          },
-          {
-            id: 'article-3',
-            date: '02 Mai 2024',
-            title: 'Sotel Tchad au forum de l\'innovation',
-            excerpt: 'Retour sur notre participation au SITIC AFRICA 2024 et nos engagements pour l\'économie numérique.',
-            image: 'https://images.unsplash.com/photo-1591115765373-520b7a21765b?auto=format&fit=crop&q=80&w=800'
-          }
-        ]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNews();
-  }, []);
-
   return (
     <section id="actualités" className="py-24 bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -105,17 +76,11 @@ export const News: React.FC<NewsProps> = ({ onSeeAll, onReadArticle }) => {
           )}
         </div>
         
-        {loading ? (
-          <div className="flex justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {newsItems.map((item) => (
-              <NewsCard key={item.id} {...item} onRead={onReadArticle} />
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {STATIC_NEWS_ITEMS.map((item) => (
+            <NewsCard key={item.id} {...item} onRead={onReadArticle} />
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -1,35 +1,16 @@
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ViewState } from '../App';
-import { fetchSanity } from '../services/sanity';
 
 interface HeroProps {
   onNavigate: (view: ViewState) => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
-  const [content, setContent] = useState({
+  const content = {
     title: "L'excellence technologique au cœur du Tchad",
     subtitle: 'Découvrez une connectivité ultra-rapide avec la fibre optique de Sotel Tchad. Le premier opérateur historique au service de votre transformation numérique.'
-  });
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const query = '*[_type == "settings"][0]';
-        const result = await fetchSanity(query);
-        if (result) {
-          setContent({
-            title: result.heroTitle || content.title,
-            subtitle: result.heroSubtitle || content.subtitle
-          });
-        }
-      } catch (error) {
-        console.error('Erreur Sanity Hero Settings:', error);
-      }
-    };
-    fetchSettings();
-  }, []);
+  };
 
   return (
     <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 bg-slate-50 overflow-hidden">

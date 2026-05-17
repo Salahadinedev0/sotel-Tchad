@@ -1,7 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ViewState } from '../App';
-import { fetchSanity } from '../services/sanity';
 
 type OfferType = 'fiber' | 'mobile';
 
@@ -9,69 +8,23 @@ interface OffersProps {
   onNavigate: (view: ViewState) => void;
 }
 
+const STATIC_FIBER_PLANS = [
+  { name: 'Bronze', speed: '4 Mbps', price: '30.000', popular: false, features: ['Usage illimité', 'Support 24/7', 'Wifi inclus'] },
+  { name: 'Silver', speed: '10 Mbps', price: '75.000', popular: true, features: ['Streaming HD', 'Usage illimité', 'Installation Prioritaire'] },
+  { name: 'Gold', speed: '20 Mbps', price: '140.000', popular: false, features: ['Visioconférence 4K', 'Usage illimité', 'Routeur Premium'] },
+];
+
+const STATIC_MOBILE_BUNDLES = [
+  { name: 'Journée Plus', data: '500 Mo', validity: '24h', price: '500' },
+  { name: 'Semaine Giga', data: '4 Go', validity: '7 Jours', price: '2.500' },
+  { name: 'Mois Max', data: '15 Go', validity: '30 Jours', price: '10.000' },
+];
+
 export const Offers: React.FC<OffersProps> = ({ onNavigate }) => {
   const [activeTab, setActiveTab] = useState<OfferType>('fiber');
-  const [fiberPlans, setFiberPlans] = useState<any[]>([]);
-  const [mobileBundles, setMobileBundles] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchOffers = async () => {
-      try {
-        const query = '*[_type == "product"]';
-        const result = await fetchSanity(query);
-        
-        const fiber = result
-          .filter((item: any) => item.category === 'fiber')
-          .map((item: any) => ({
-            name: item.name,
-            speed: item.speed,
-            price: item.price,
-            popular: item.popular,
-            features: item.features || []
-          }));
-
-        const mobile = result
-          .filter((item: any) => item.category === 'mobile')
-          .map((item: any) => ({
-            name: item.name,
-            data: item.data,
-            validity: item.validity,
-            price: item.price,
-            popular: item.popular
-          }));
-
-        if (fiber.length > 0) {
-          setFiberPlans(fiber);
-        } else {
-          setFiberPlans([
-            { name: 'Bronze', speed: '4 Mbps', price: '30.000', popular: false, features: ['Usage illimité', 'Support 24/7', 'Wifi inclus'] },
-            { name: 'Silver', speed: '10 Mbps', price: '75.000', popular: true, features: ['Streaming HD', 'Usage illimité', 'Installation Prioritaire'] },
-            { name: 'Gold', speed: '20 Mbps', price: '140.000', popular: false, features: ['Visioconférence 4K', 'Usage illimité', 'Routeur Premium'] },
-          ]);
-        }
-
-        if (mobile.length > 0) {
-          setMobileBundles(mobile);
-        } else {
-          setMobileBundles([
-            { name: 'Journée Plus', data: '500 Mo', validity: '24h', price: '500' },
-            { name: 'Semaine Giga', data: '4 Go', validity: '7 Jours', price: '2.500' },
-            { name: 'Mois Max', data: '15 Go', validity: '30 Jours', price: '10.000' },
-          ]);
-        }
-      } catch (error: any) {
-        console.error('Erreur Sanity Offers:', error);
-        // On affiche plus de détails si possible
-        if (error.message?.includes('Network Error') || error.message?.includes('Failed to fetch')) {
-          console.warn('Problème de connexion Sanity : Vérifiez vos paramètres CORS sur manage.sanity.io');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchOffers();
-  }, []);
+  const fiberPlans = STATIC_FIBER_PLANS;
+  const mobileBundles = STATIC_MOBILE_BUNDLES;
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">

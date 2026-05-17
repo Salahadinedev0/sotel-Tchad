@@ -1,38 +1,18 @@
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { analytics } from '../services/analytics';
 import { ViewState } from '../App';
-import { fetchSanity } from '../services/sanity';
 
 interface PricingBannerProps {
   onNavigate: (view: ViewState) => void;
 }
 
 export const PricingBanner: React.FC<PricingBannerProps> = ({ onNavigate }) => {
-  const [content, setContent] = useState({
+  const content = {
     title: 'La Fibre à un prix imbattable',
     description: 'Propulsez votre foyer dans une nouvelle dimension numérique avec notre offre d\'entrée de gamme ultra-performante.',
     price: '30.000'
-  });
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const query = '*[_type == "settings"][0]';
-        const result = await fetchSanity(query);
-        if (result) {
-          setContent({
-            title: result.bannerTitle || content.title,
-            description: result.bannerDescription || content.description,
-            price: result.bannerPrice || content.price
-          });
-        }
-      } catch (error) {
-        console.error('Erreur Sanity Settings:', error);
-      }
-    };
-    fetchSettings();
-  }, []);
+  };
 
   const handleSubscribe = () => {
     analytics.track('cta_click', `Subscription Fiber ${content.price} FCFA`);

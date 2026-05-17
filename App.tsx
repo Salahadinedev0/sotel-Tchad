@@ -18,7 +18,6 @@ import { ServiceDetailsPage } from './components/ServiceDetailsPage';
 import { FAQPage } from './components/FAQPage';
 import { NewsArticlePage } from './components/NewsArticlePage';
 import { IncidentNetworkPage } from './components/IncidentNetworkPage';
-import { StudioPage } from './components/StudioPage';
 import { analytics } from './services/analytics';
 
 export type ViewState = 'home' | 'about' | 'offers' | 'coverage' | 'news' | 'contact' | 'service-details' | 'faq' | 'news-article' | 'incident-network';
@@ -95,10 +94,7 @@ const MainSite: React.FC = () => {
 const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/studio/*" element={<StudioPage />} />
-        <Route path="*" element={<MainSite />} />
-      </Routes>
+      <MainSite />
     </BrowserRouter>
   );
 };
