@@ -26,5 +26,5 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "include": ["**/*.ts", "**/*.tsx", "vite-env.d.ts", "sanity.config.ts"]
+  "include": ["**/*.ts", "**/*.tsx", "vite-env.d.ts"]
 }
